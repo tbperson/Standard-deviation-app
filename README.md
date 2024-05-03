@@ -41,7 +41,7 @@ Standard deviation is a fundamental concept in various school subjects and acade
 
 ## YouTube Demo
 
-For a demo on how to use this Standard Deviation Calculator, check out [this YouTube video](#).
+For a demo on how to use this Standard Deviation Calculator, check out [this YouTube video](#). It does not work currently as the video is not made
 
 Feel free to contribute to the code or suggest improvements!
 
