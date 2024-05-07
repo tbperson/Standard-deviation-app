@@ -4,7 +4,7 @@ class TableApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Standard_Deviation")
-        self.configure(bg="dark goldenrod")  # Set background color for the entire application
+        self.configure(bg="green")  # Set background color for the entire application
         self.create_widgets()
 
     def create_widgets(self):
