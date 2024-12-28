@@ -1,4 +1,7 @@
 import tkinter as tk
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Font, Border, Side
+from tkinter import filedialog
 
 class TableApp(tk.Tk):
     def __init__(self):
@@ -17,6 +20,9 @@ class TableApp(tk.Tk):
 
         self.calculate_button = tk.Button(self, text="Calculate the standard deviation", command=self.calculate_standard_deviation, state=tk.DISABLED)
         self.calculate_button.pack()
+
+        self.export_button = tk.Button(self, text="Export data", command=self.export_data)
+        self.export_button.pack()
 
         # Add a text widget to display the standard deviation
         self.rank_display = tk.Text(self, height=2, width=30)
@@ -102,6 +108,50 @@ class TableApp(tk.Tk):
         self.rank_display.delete(1.0, tk.END)
         self.rank_display.insert(tk.END, f"Mean: {mean}\n")
         self.rank_display.insert(tk.END, f"Standard Deviation: {standard_deviation}")
+
+    def export_data(self):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Standard deviation data"
+        values = [self.input_entry_vars[i][0].get() for i in range(self.num_rows)]
+        differences = [self.input_entry_vars2[i][0].get() for i in range(self.num_rows)]
+        mean = self.get_mean()
+        differences_from_mean = self.get_differences(mean)
+        variance = sum([diff ** 2 for diff in differences_from_mean]) / len(differences_from_mean)
+        standard_deviation = round(variance ** 0.5, 4)
+        
+        header = (["Index", "Value 1", "Value 2", "D1", "D2"])
+        ws.append(header)
+        
+
+        for i, (value1, value2, diff1, diff2) in enumerate(zip(values, differences, differences_from_mean, differences)):
+            ws.append([i + 1, value1, value2, diff1, diff2])
+        
+        ws.append([])
+        ws.append(["Mean", mean])
+        ws.append(["Standard Deviation", standard_deviation])
+
+        green_fill = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")
+        black_border = Border(left=Side(style='thin', color='000000'),
+                          right=Side(style='thin', color='000000'),
+                          top=Side(style='thin', color='000000'),
+                          bottom=Side(style='thin', color='000000'))
+
+        for cell in ws[1]:
+            cell.fill = green_fill
+
+        for row in ws.iter_rows():
+            for cell in row:
+                cell.border = black_border
+
+            for row in ws.iter_rows(min_row=2):
+                for cell in row:
+                    cell.fill = PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+
+
+        file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
+        if file_path:
+            wb.save(file_path)
 
 if __name__ == "__main__":
     app = TableApp()
